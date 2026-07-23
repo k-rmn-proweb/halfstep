@@ -17,7 +17,7 @@ export const brandColors = {
 
   ink: "#211910",
   inkMuted: "#786e64",
-  inkFaint: "#948c83",
+  inkFaint: "#8f877e",
 
   edge: "#e1ddd8",
   edgeStrong: "#c7c3bf",

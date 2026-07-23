@@ -37,10 +37,14 @@
    * the same lightness as ink-muted and the second tone stops existing. The
    * price of the extra step is that it may only carry text at 18px+ or bold,
    * and non-text elements. Never put it on a caption.
+   *
+   * Solved for 3.2:1 rather than exactly 3:1. The value that computes to a flat
+   * 3.00 here measures 2.99 in Chrome — browsers convert oklch to sRGB with
+   * their own rounding, and an audit fails on the hundredth. Keep the headroom.
    */
   --ink: oklch(0.22 0.02 70);
   --ink-muted: oklch(0.544 0.02 70);
-  --ink-faint: oklch(0.644 0.016 70);
+  --ink-faint: oklch(0.627 0.016 70);
 
   --edge: oklch(0.9 0.008 70);
   --edge-strong: oklch(0.82 0.008 70);
