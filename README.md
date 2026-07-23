@@ -18,6 +18,7 @@ pricing toggle. The site contains no images at all.
 | Styling   | Tailwind CSS v4 — tokens only, one stylesheet          |
 | Motion    | Motion (Framer Motion) via `LazyMotion` in strict mode |
 | Type      | Instrument Serif (display), Geist, Geist Mono          |
+| Forms     | Server Actions with Zod, validated server-side         |
 | Quality   | ESLint + Prettier with import sorting                  |
 
 ## Getting started
@@ -71,6 +72,18 @@ A few constraints are non-obvious and documented at their definition:
 - the LCP element is never wrapped in a scroll reveal
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for how the code is organised and why.
+
+## The contact form
+
+It validates on the server through a Server Action, so it reports per-field
+errors with JavaScript disabled and keeps what you typed when a submission is
+rejected. It stores nothing, deliberately, and says so beside the submit button
+rather than after: a portfolio form that claims to have received a real enquiry
+and then drops it is worse than no form at all.
+
+Schema, action and client state sit in three modules (`lib/schemas`,
+`lib/actions`, `lib/contact-form-state.ts`) so that Zod never reaches the
+browser bundle.
 
 ## Accessibility and motion
 
