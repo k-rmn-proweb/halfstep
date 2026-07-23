@@ -6,7 +6,7 @@ export const siteConfig = {
   locale: "en_US",
   author: {
     name: "Konstantin",
-    url: "https://github.com/",
+    url: "https://github.com/k-rmn-proweb",
   },
   /** Section anchors, in page order. Labels live in `content/nav.ts`. */
   anchors: {

@@ -36,7 +36,10 @@ export const footerContent = {
     {
       heading: "Elsewhere",
       links: [
-        { href: "https://github.com/", label: "GitHub" },
+        {
+          href: "https://github.com/k-rmn-proweb/halfstep",
+          label: "Source on GitHub",
+        },
         { href: "https://vercel.com/", label: "Deployed on Vercel" },
       ],
     },
