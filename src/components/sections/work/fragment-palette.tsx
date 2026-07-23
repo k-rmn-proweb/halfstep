@@ -39,9 +39,9 @@ export function FragmentPalette() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder={palette.placeholder}
-          className="w-full bg-transparent text-small outline-none placeholder:text-ink-faint"
+          className="w-full bg-transparent text-small outline-none placeholder:text-ink-muted"
         />
-        <kbd className="rounded border border-edge px-1.5 py-0.5 font-mono text-label text-ink-faint">
+        <kbd className="rounded border border-edge px-1.5 py-0.5 font-mono text-label text-ink-muted">
           ⌘K
         </kbd>
       </div>
@@ -62,7 +62,7 @@ export function FragmentPalette() {
             className="flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-canvas-subtle"
           >
             <span className="text-small">{item.label}</span>
-            <span className="font-mono text-label text-ink-faint">
+            <span className="font-mono text-label text-ink-muted">
               {item.group}
             </span>
           </m.li>

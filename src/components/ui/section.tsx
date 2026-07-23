@@ -37,9 +37,9 @@ export function Section({
 }
 
 /**
- * The small mono label above a section heading. Uses `ink-faint`, which is only
- * legal here because it is uppercase mono at label size with wide tracking —
- * see the contrast note in ARCHITECTURE.md before reusing it on body copy.
+ * The small mono label above a section heading. Deliberately `ink-muted`, not
+ * `ink-faint`: label size is far below the 18px floor that the fainter tone is
+ * limited to. See the contrast note in ARCHITECTURE.md.
  */
 export function Eyebrow({
   children,
