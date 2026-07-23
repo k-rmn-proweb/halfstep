@@ -1,6 +1,9 @@
 "use client";
 
-import { m, useReducedMotion } from "motion/react";
+import { useReducedMotion } from "motion/react";
+// Namespace import: this entry exports each element separately, and pulling
+// them in this way keeps the full `motion.*` bundle out of the graph.
+import * as m from "motion/react-m";
 
 import { revealUp, revealViewport, transitions } from "@/lib/motion";
 import { cn } from "@/lib/utils";

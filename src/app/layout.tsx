@@ -3,6 +3,9 @@ import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 
 import { brandColors } from "@/config/brand";
 import { siteConfig } from "@/config/site";
+import { navContent } from "@/content/nav";
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
 import { Providers } from "@/components/layout/providers";
 
 import "./globals.css";
@@ -64,8 +67,19 @@ export default function RootLayout({
           <style>{`[data-reveal]{opacity:1!important;transform:none!important}`}</style>
         </noscript>
 
+        <a
+          href="#main"
+          className="sr-only rounded-full bg-brand px-5 py-3 text-small text-brand-foreground focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100"
+        >
+          {navContent.skipToContent}
+        </a>
+
         <Providers>
-          <main className="flex-1">{children}</main>
+          <Header />
+          <main id="main" className="flex-1">
+            {children}
+          </main>
+          <Footer />
         </Providers>
       </body>
     </html>
