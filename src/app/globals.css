@@ -1,26 +1,181 @@
 @import "tailwindcss";
 
+/*
+ * Raw palette. Every value is oklch so lightness stays perceptually even across
+ * the scale. Nothing outside this file should know a hex code.
+ *
+ * The site ships a single light theme — there is no theme switch, so no `.dark`
+ * block and no `@theme inline`: utilities can resolve these values at build
+ * time because nothing swaps them at runtime.
+ *
+ * Lightness values are calculated, not eyeballed. See the notes on each group.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  /*
+   * Vermilion has a dead zone around L 0.60-0.66 where neither white nor ink
+   * clears 4.5:1 — exactly the value that looks most appetising. Hence three
+   * separate roles instead of one brand colour with opacity tweaks.
+   */
+  --brand: oklch(0.55 0.19 35); /* fills under white text — 5.31:1 */
+  --brand-vivid: oklch(0.7 0.19 35); /* graphics only, never under text */
+  --brand-ink: oklch(0.565 0.19 35); /* vermilion as text on paper — 4.50:1 */
+  --brand-foreground: oklch(1 0 0);
+
+  /* Warm paper rather than white; cards sit *above* it in pure white. */
+  --canvas: oklch(0.99 0.004 70);
+  --canvas-subtle: oklch(0.965 0.006 70);
+  --surface: oklch(1 0 0);
+  --surface-hover: oklch(0.985 0.004 70);
+
+  /*
+   * Ink scale. Solved against canvas, canvas-subtle and surface at once:
+   * `ink-muted` is the lightest value still clearing 4.5:1 on all three.
+   *
+   * `ink-faint` deliberately targets 3:1, NOT 4.5:1 — at 4.5 it collapses onto
+   * the same lightness as ink-muted and the second tone stops existing. The
+   * price of the extra step is that it may only carry text at 18px+ or bold,
+   * and non-text elements. Never put it on a caption.
+   */
+  --ink: oklch(0.22 0.02 70);
+  --ink-muted: oklch(0.544 0.02 70);
+  --ink-faint: oklch(0.644 0.016 70);
+
+  --edge: oklch(0.9 0.008 70);
+  --edge-strong: oklch(0.82 0.008 70);
+
+  --ring: var(--brand);
+  --glow: oklch(0.7 0.19 35 / 0.18);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+@theme {
+  --color-brand: var(--brand);
+  --color-brand-vivid: var(--brand-vivid);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-foreground: var(--brand-foreground);
+
+  --color-canvas: var(--canvas);
+  --color-canvas-subtle: var(--canvas-subtle);
+  --color-surface: var(--surface);
+  --color-surface-hover: var(--surface-hover);
+
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-faint: var(--ink-faint);
+
+  --color-edge: var(--edge);
+  --color-edge-strong: var(--edge-strong);
+
+  --color-ring: var(--ring);
+  --color-glow: var(--glow);
+
+  /*
+   * Instrument Serif ships a single weight — 400 plus its italic. Emphasis
+   * inside a headline is made with italic and colour, never with weight.
+   */
+  --font-display: var(--font-instrument-serif);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /*
+   * Fluid type. Every clamp() is solved to hit its min at a 375px viewport and
+   * its max at 1440px, so the steps land on real numbers instead of drifting.
+   * Display steps grow on an aggressive ratio, text steps on a calm one.
+   */
+  --text-display: clamp(2.75rem, 1.165rem + 6.761vw, 7.25rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.03em;
+
+  --text-h1: clamp(2.125rem, 1.289rem + 3.568vw, 4.5rem);
+  --text-h1--line-height: 1;
+  --text-h1--letter-spacing: -0.025em;
+
+  --text-h2: clamp(1.75rem, 1.31rem + 1.878vw, 3rem);
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.02em;
+
+  --text-h3: clamp(1.375rem, 1.155rem + 0.939vw, 2rem);
+  --text-h3--line-height: 1.15;
+  --text-h3--letter-spacing: -0.015em;
+
+  --text-lead: clamp(1.125rem, 1.037rem + 0.376vw, 1.375rem);
+  --text-lead--line-height: 1.5;
+  --text-lead--letter-spacing: -0.01em;
+
+  --text-body: clamp(1rem, 0.956rem + 0.188vw, 1.125rem);
+  --text-body--line-height: 1.6;
+
+  --text-small: clamp(0.875rem, 0.853rem + 0.094vw, 0.9375rem);
+  --text-small--line-height: 1.5;
+
+  --text-label: clamp(0.75rem, 0.728rem + 0.094vw, 0.8125rem);
+  --text-label--line-height: 1.3;
+  --text-label--letter-spacing: 0.08em;
+
+  /*
+   * Measure. Body text at 18px across the full 1120px page would run to ~124
+   * characters per line against a 45-85 norm, so prose needs its own width.
+   */
+  --container-page: 70rem; /* 1120px */
+  --container-lead: 48rem; /* ~70 cpl at lead size */
+  --container-measure: 39rem; /* ~70 cpl at body size */
+
+  /*
+   * Motion. CSS transitions read these directly; JS animations mirror them in
+   * lib/motion.ts, because Framer Motion cannot resolve custom properties.
+   */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--edge);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Offset anchor targets so the sticky header never covers a heading. */
+    scroll-padding-top: 5rem;
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--ink);
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-size: var(--text-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* One focus style for the whole site. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--brand);
+    color: var(--brand-foreground);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/*
+ * One switch for everyone who asked for less movement. Motion components check
+ * this separately via useReducedMotion; this covers every CSS transition,
+ * hover lift and smooth scroll without each component opting in.
+ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

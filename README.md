@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Halfstep
 
-## Getting Started
+Landing page for a fictional design engineering studio — a showcase of interface
+design and motion.
 
-First, run the development server:
+> Work in progress. The live URL lands here once Phase 7 ships.
+
+## Stack
+
+| Layer     | Choice                                                 |
+| --------- | ------------------------------------------------------ |
+| Framework | Next.js 16 (App Router, static)                        |
+| Language  | TypeScript, strict                                     |
+| Styling   | Tailwind CSS v4 — tokens only, one stylesheet          |
+| Motion    | Motion (Framer Motion) via `LazyMotion` in strict mode |
+| Type      | Instrument Serif (display), Geist, Geist Mono          |
+| Quality   | ESLint + Prettier with import sorting                  |
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Script           | What it does                          |
+| ---------------- | ------------------------------------- |
+| `npm run dev`    | Development server                    |
+| `npm run build`  | Production build                      |
+| `npm run check`  | `typecheck` + `lint` + `format:check` |
+| `npm run format` | Format and sort imports               |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`npm run check` and `npm run build` must both pass before every commit.
 
-## Learn More
+## Design system
 
-To learn more about Next.js, take a look at the following resources:
+Colour and type values are calculated, not picked by eye. The palette is
+declared in oklch in `src/app/globals.css`, and every quiet tone sits at the
+lightness that clears its WCAG contrast target against all three backgrounds it
+appears on.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+A few constraints are non-obvious and documented at their definition:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- the brand vermilion has a lightness range where neither white nor ink is
+  legible on it, so it is split into three roles
+- `ink-faint` clears 3:1 rather than 4.5:1, which restricts it to 18px and above
+- prose needs an explicit measure — full page width runs to ~124 characters per line
+- the LCP element is never wrapped in a scroll reveal
 
-## Deploy on Vercel
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for how the code is organised and why.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Accessibility and motion
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The site ships a single light theme. Every animation respects
+`prefers-reduced-motion`: CSS transitions are neutralised globally in
+`globals.css`, and Motion components check `useReducedMotion` themselves.
+Scroll-revealed blocks are server-rendered at `opacity: 0`, so a `<noscript>`
+fallback reveals them when JavaScript is unavailable.
