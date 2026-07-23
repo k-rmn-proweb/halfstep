@@ -3,7 +3,11 @@
 Landing page for a fictional design engineering studio — a showcase of interface
 design and motion.
 
-> Work in progress. The live URL lands here once Phase 7 ships.
+**[halfstep.vercel.app](https://halfstep.vercel.app)**
+
+Every case in the Work section is a working fragment rather than a screenshot:
+a command palette that filters as you type, a state switcher, a token picker, a
+pricing toggle. The site contains no images at all.
 
 ## Stack
 
@@ -29,15 +33,16 @@ platform's own URL is used when the variable is unset.
 
 ## Lighthouse
 
-Measured against a production build, not the dev server:
+Measured against the deployed site, not the dev server:
 
 |         | Performance | Accessibility | Best practices | SEO |
 | ------- | ----------- | ------------- | -------------- | --- |
 | Desktop | 100         | 100           | 100            | 100 |
-| Mobile  | 93          | 100           | 100            | 100 |
+| Mobile  | 95          | 100           | 100            | 100 |
 
-Zero cumulative layout shift on both. The gap on mobile is Largest Contentful
-Paint under simulated throttling.
+Effectively zero cumulative layout shift on both, and a 0.4 s Largest
+Contentful Paint on desktop. The gap on mobile is LCP under simulated
+throttling.
 
 ## Scripts
 
