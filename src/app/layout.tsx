@@ -3,7 +3,10 @@ import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 
 import { brandColors } from "@/config/brand";
 import { siteConfig } from "@/config/site";
+import { siteUrl } from "@/config/site-url";
+import { metaContent } from "@/content/meta";
 import { navContent } from "@/content/nav";
+import { structuredData } from "@/lib/structured-data";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { Providers } from "@/components/layout/providers";
@@ -37,9 +40,43 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: siteConfig.name,
-  description: "Design engineering studio.",
+  // Makes every relative URL below — canonical, OG image — absolute.
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: metaContent.title,
+    template: metaContent.titleTemplate,
+  },
+  description: metaContent.description,
   applicationName: siteConfig.name,
+  keywords: [...metaContent.keywords],
+  authors: [{ name: siteConfig.author.name, url: siteConfig.author.url }],
+  creator: siteConfig.author.name,
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    siteName: siteConfig.name,
+    title: metaContent.title,
+    description: metaContent.description,
+    locale: siteConfig.locale,
+    // The image comes from app/opengraph-image.tsx by file convention.
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: metaContent.title,
+    description: metaContent.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
 };
 
 export const viewport: Viewport = {
@@ -81,6 +118,13 @@ export default function RootLayout({
           </main>
           <Footer />
         </Providers>
+
+        {/* Structured data: rendered last so it never delays the content. */}
+        <script
+          type="application/ld+json"
+          // Serialised from a typed object we control — no user input reaches it.
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
       </body>
     </html>
   );

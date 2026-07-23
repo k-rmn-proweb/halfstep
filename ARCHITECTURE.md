@@ -26,14 +26,20 @@ src/
 ├── content/                # All user-facing copy, as typed const objects
 ├── config/
 │   ├── site.ts             # Identity, external links, section anchors
+│   ├── site-url.ts         # Canonical origin, resolved once
 │   └── brand.ts            # Hex mirrors of the colour tokens (see rule 10)
 ├── lib/
-│   ├── utils.ts            # cn()
-│   └── motion.ts           # Easing, durations and variants for JS animation
+│   ├── utils.ts            # cn(), taught our token names (see rule 11)
+│   ├── motion.ts           # Easing, durations and variants for JS animation
+│   ├── structured-data.ts  # JSON-LD, built from the same content the page renders
+│   ├── contact-form-state.ts  # State the client form needs, without Zod
+│   ├── schemas/            # Zod schemas + inferred types, server side only
+│   └── actions/            # "use server" mutations
 ├── hooks/                  # Shared client hooks (created when a second consumer appears)
 └── types/                  # Cross-cutting types (created only when actually shared)
 
 public/
+├── fonts/                  # Static font files for the OG renderer only
 └── images/                 # Static imagery
 ```
 
@@ -120,6 +126,27 @@ cannot read custom properties:
 
 Change a token, change its mirror.
 
+**11. A Server Action's schema lives in its own file.**
+A `"use server"` module may export nothing but async functions, so Zod schemas
+cannot sit beside the action that uses them:
+
+- `lib/schemas/contact.ts` — the schema, server side only
+- `lib/actions/contact.ts` — `"use server"`, imports the schema
+- `lib/contact-form-state.ts` — the state and constants the client form needs
+
+The third file exists for weight, not tidiness: anything a Client Component
+imports is downloaded by the browser, so a form importing its state from the
+schema module would ship all of Zod with it. Types may cross freely —
+`import type` is erased before bundling.
+
+**12. `cn()` knows our token names.**
+`tailwind-merge` only understands Tailwind's stock scales. Our type scale and
+palette are custom, so it read `text-brand-foreground` and `text-small` as one
+class group and dropped the colour — which is how every primary button silently
+ended up with ink on vermilion at 3.26:1, caught only by an accessibility audit.
+`lib/utils.ts` teaches it both groups. **Extend that list whenever a colour or a
+type step is added**, or the same failure returns without a warning.
+
 ## The design system's non-obvious constraints
 
 These are calculated values. Changing them is a contrast or layout decision, not
@@ -145,7 +172,13 @@ to ~124 characters per line against a 45-85 norm. Use `Container` with
 
 **The LCP element is never animated.** Above-the-fold content is not wrapped in
 `Reveal`: starting the hero at `opacity: 0` delays the metric it is measured by.
-Motion in the hero must come from something other than fading in.
+Motion in the hero must come from something other than fading in. Note that the
+element actually measured varies by viewport — on mobile it is the lead
+paragraph, not the headline — so the rule applies to the whole first screen.
+
+**`Reveal` renders the tag it replaces.** Inside a list it must be `as="li"`:
+wrapping list items in divs breaks the semantics a screen reader relies on to
+announce how many items there are.
 
 ## Import order
 

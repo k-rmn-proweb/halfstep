@@ -13,6 +13,12 @@ type RevealProps = {
   className?: string;
   /** Seconds of stagger, for revealing a list one item after another. */
   delay?: number;
+  /**
+   * The element to render. Defaults to a div, but a reveal inside a list has
+   * to be the `<li>` itself — wrapping list items in divs breaks the list
+   * semantics that screen readers rely on to announce "4 items".
+   */
+  as?: "div" | "li";
 };
 
 /**
@@ -21,15 +27,22 @@ type RevealProps = {
  * Above-the-fold content is deliberately left alone — starting the hero at
  * `opacity: 0` would push out the LCP it is measured by.
  */
-export function Reveal({ children, className, delay = 0 }: RevealProps) {
+export function Reveal({
+  children,
+  className,
+  delay = 0,
+  as = "div",
+}: RevealProps) {
   const reduceMotion = useReducedMotion();
+  const Tag = as === "li" ? "li" : "div";
+  const MotionTag = as === "li" ? m.li : m.div;
 
   if (reduceMotion) {
-    return <div className={className}>{children}</div>;
+    return <Tag className={className}>{children}</Tag>;
   }
 
   return (
-    <m.div
+    <MotionTag
       // Hook for the no-JavaScript fallback in the root layout: the server
       // renders this element at opacity 0, so without JS it would never appear.
       data-reveal
@@ -41,6 +54,6 @@ export function Reveal({ children, className, delay = 0 }: RevealProps) {
       transition={{ ...transitions.reveal, delay }}
     >
       {children}
-    </m.div>
+    </MotionTag>
   );
 }

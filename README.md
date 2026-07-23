@@ -23,6 +23,22 @@ npm install
 npm run dev
 ```
 
+Copy `.env.example` to `.env.local` if you need canonical URLs to point
+somewhere real — everything else runs without configuration. On Vercel the
+platform's own URL is used when the variable is unset.
+
+## Lighthouse
+
+Measured against a production build, not the dev server:
+
+|         | Performance | Accessibility | Best practices | SEO |
+| ------- | ----------- | ------------- | -------------- | --- |
+| Desktop | 100         | 100           | 100            | 100 |
+| Mobile  | 93          | 100           | 100            | 100 |
+
+Zero cumulative layout shift on both. The gap on mobile is Largest Contentful
+Paint under simulated throttling.
+
 ## Scripts
 
 | Script           | What it does                          |
